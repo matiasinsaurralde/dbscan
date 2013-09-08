@@ -11,7 +11,7 @@ $ gem install dbscan
 $ ruby examples/simple.rb
 ```
 
-Input:
+Example:
 
 ```ruby
 input = [ 0, 10, 20 ],
@@ -26,6 +26,8 @@ input = [ 0, 10, 20 ],
         [ 500, 300, 202],
         [ 500, 302, 204 ]
 ```
+
+Output:
 
 ```ruby
 {-1=>[[300, 70, 20]],
