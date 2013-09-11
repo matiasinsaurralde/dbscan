@@ -17,7 +17,10 @@ module DBSCAN
 
 		def initialize( points, options = {} )
 			options[:distance] = :euclidean_distance if !options[:distance]
-			@points, @options, @clusters = points.map { |e| Point.new(e) }, options, {-1 => []}
+			options[:labels] = [] if !options[:labels]
+
+			c = 0
+			@points, @options, @clusters = points.map { |e| po = Point.new(e, options[:labels][c] ); c +=1; po }, options, {-1 => []}
 
 			clusterize!
 		end
@@ -44,6 +47,17 @@ module DBSCAN
 		def results
 			hash = {}
 			@clusters.dup.each { |cluster_index, value| hash[cluster_index] = value.flatten.map(&:items) if !value.flatten.empty? }
+			hash
+		end
+
+ 		def labeled_results
+ 			hash = {}
+ 			@clusters.each do |cluster_index, elements|
+ 				hash.store( cluster_index, [] )
+ 				elements.each do |e|
+ 					hash[cluster_index].push( e.label )
+ 				end
+ 			end
 			hash
 		end
 
@@ -85,11 +99,11 @@ module DBSCAN
 	end
 
 	class Point
-		attr_accessor :items, :cluster, :visited
+		attr_accessor :items, :cluster, :visited, :label
 		define_method(:visited?) { @visited }
 		define_method(:visit!) { @visited = true }
-		def initialize( point )
-			@items, @cluster, @visited = point, nil, false
+		def initialize( point, label )
+			@items, @cluster, @visited, @label = point, nil, false, label
 		end
 	end
 
